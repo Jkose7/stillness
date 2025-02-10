@@ -6,7 +6,7 @@ on: # runs on every push to the main branch, every pull request, and once a week
   pull_request:
     branches: [ "main", "master" ]
   schedule:
-    - cron: '0 0 * * 0'  
+    - cron: '0 0 * * 3,0'  # Runs every Wednesday & Sunday at midnight UTC
 
 jobs:
   analyze:
@@ -35,10 +35,13 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
         languages: javascript
-        queries: security-extended,security-and-quality
+        queries:
+          - security-extended
+          - security-and-quality
+        config-file: .github/workflows/codeql-config.yml # Path to the CodeQL configuration file
 
     - name: Run ESLint
-      run: npm run lint || true
+      run: npm run lint -- --max-warnings=0
         
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
@@ -51,20 +54,22 @@ jobs:
       with:
         script: |
           const fs = require('fs');
+          const ref = context.payload.pull_request ? context.payload.pull_request.head.sha : context.sha;
+          
           const scanResults = await github.rest.codeScanning.listAlertsForRepo({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            ref: context.sha
+            ref: ref
           });
           
-          let comment = '## CodeQL Analysis Results\n\n';
+          let comment = '🌀 **codeql analysis results**\n\n';
           
           if (scanResults.data.length === 0) {
-            comment += '✅ No issues found\n';
+            comment += '✅ no issues found!\n';
           } else {
-            comment += '⚠️ Found the following concerns:\n\n';
+            comment += '🚨 found the following issues:\n\n';
             scanResults.data.forEach(alert => {
-              comment += `- ${alert.rule.description} (${alert.rule.severity})\n`;
+              comment += `- [${alert.rule.description}](${alert.html_url}) (${alert.rule.severity})\n`;
             });
           }
           

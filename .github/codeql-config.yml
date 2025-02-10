@@ -8,7 +8,7 @@ query-filters:
   - exclude:
       problem.severity:
         - recommendation
-      tags: 
+      tags:
         - "maintainability"
 
 paths:
@@ -17,5 +17,5 @@ paths:
 paths-ignore:
   - node_modules
   - dist
-  - '**/*.test.js'
-  - '**/*.spec.js'
+  - "**/*.test.js"
+  - "**/*.spec.js"

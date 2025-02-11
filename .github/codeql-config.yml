@@ -4,13 +4,6 @@ queries:
   - uses: security-and-quality
   - uses: security-extended
 
-query-filters:
-  - exclude:
-      problem.severity:
-        - recommendation
-      tags:
-        - "maintainability"
-
 paths:
   - src
   - tests

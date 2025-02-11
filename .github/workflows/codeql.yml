@@ -3,9 +3,9 @@ name: "CodeQL Analysis"
 # runs on every push to the main branch, every pull request, and once a week
 on:
   push:
-    branches: ["main", "master"]
+    branches: ["main", "master", "develop"]
   pull_request:
-    branches: ["main", "master"]
+    branches: ["main", "master", "develop"]
   schedule:
     - cron: "0 0 * * 3,0" # Runs every Wednesday & Sunday at midnight UTC
 
